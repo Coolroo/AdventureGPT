@@ -110,6 +110,10 @@ const exploreArea = (
       alreadyExplored = alreadyExplored.concat(result.explored);
     });
 
+  interactions = [...new Set(interactions)];
+  items = [...new Set(items)];
+  alreadyExplored = [...new Set(alreadyExplored)];
+
   return {
     interactions,
     items,
