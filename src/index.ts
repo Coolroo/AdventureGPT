@@ -36,8 +36,6 @@ const createAdventure = async () => {
   const endIndex = responseText.lastIndexOf("}") + 1;
   const adventureText = responseText.substring(startIndex, endIndex);
 
-  console.log(adventureText);
-
   let adventure = JSON.parse(adventureText) as Adventure;
 
   await saveAdventure(adventure);
