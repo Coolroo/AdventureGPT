@@ -12,7 +12,6 @@ import {
 export const verifyAdventure = (adventure: Adventure) => {
   adventure = structuredClone(adventure);
   console.log(`Verifying Adventure ${adventure.title}`);
-  console.log(`Entire adventure: ${JSON.stringify(adventure)}`);
   let initialArea = getArea(adventure, adventure.start_area);
   let initialExplore = exploreArea(adventure, initialArea, []);
 
@@ -21,7 +20,11 @@ export const verifyAdventure = (adventure: Adventure) => {
   let items = initialExplore.items;
   let endings: Ending[] = [];
   console.log(
-    `Explored beginning, got these results ${JSON.stringify(interactions)}`
+    `Explored beginning, got these results ${JSON.stringify(
+      interactions,
+      null,
+      2
+    )}`
   );
   while (interactions.length > 0) {
     let removeInteractions: number[] = [];
