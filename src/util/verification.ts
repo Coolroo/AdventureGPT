@@ -21,14 +21,22 @@ export const verifyAdventure = (adventure: Adventure) => {
   let endings: Ending[] = [];
   console.log(
     `Explored beginning, got these results ${JSON.stringify(
-      interactions,
+      initialExplore,
       null,
       2
     )}`
   );
+  if (interactions.length == 0) {
+    throw new Error("Could not get any initial interactions");
+  }
   while (interactions.length > 0) {
     let removeInteractions: number[] = [];
     let didCompleteInteraction = false;
+    console.log(
+      `Processing Interactions: [\n${interactions
+        .map((interaction) => JSON.stringify(interaction, null, 1))
+        .join(",\n")}\n]`
+    );
     interactions.forEach((interaction, index) => {
       if (
         interaction.required_item == null ||
@@ -62,7 +70,7 @@ export const verifyAdventure = (adventure: Adventure) => {
       );
     }
     console.log(`Removing interactions [${removeInteractions.join(",")}]`);
-    removeInteractions.forEach((index) => {
+    removeInteractions.reverse().forEach((index) => {
       interactions.splice(index, 1);
     });
   }
@@ -88,23 +96,24 @@ const exploreArea = (
 ): { interactions: Interaction[]; items: Item[]; explored: string[] } => {
   let items = area.items.map((itemName) => getItem(adventure, itemName));
 
-  let interactions = area.interactions;
+  let interactions = area.interactions.map((thing) => thing);
 
-  let explored: string[] = alreadyExplored.concat([area.name]);
+  alreadyExplored.push(area.name);
+
   area.paths
     .filter((areaName) => !alreadyExplored.includes(areaName))
     .map((areaName) => getArea(adventure, areaName))
     .forEach((area) => {
-      let result = exploreArea(adventure, area, explored);
-      items.concat(result.items);
-      interactions.concat(result.interactions);
-      explored.concat(result.explored);
+      let result = exploreArea(adventure, area, alreadyExplored);
+      items = items.concat(result.items);
+      interactions = interactions.concat(result.interactions);
+      alreadyExplored = alreadyExplored.concat(result.explored);
     });
 
   return {
     interactions,
     items,
-    explored,
+    explored: alreadyExplored,
   };
 };
 
