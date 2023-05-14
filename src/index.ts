@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import { getAdventures, saveAdventure } from "./util/crud.js";
 import { createPrompt } from "./util/prompt.js";
 import { Adventure } from "./util/types.js";
+import { verifyAdventure } from "./util/verification.js";
 dotenv.config();
 
 const configuration = new Configuration({
@@ -38,8 +39,13 @@ const createAdventure = async () => {
 
   let adventure = JSON.parse(adventureText) as Adventure;
 
-  await saveAdventure(adventure);
-  console.log(`Successfully created adventure (${adventure.title})`);
+  try {
+    verifyAdventure(adventure);
+    await saveAdventure(adventure);
+    console.log(`Successfully created adventure (${adventure.title})`);
+  } catch (e) {
+    console.log(`Could not verify adventure for reason: ${e}`);
+  }
 };
 
 createAdventure();

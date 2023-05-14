@@ -27,7 +27,7 @@ export type Interaction = {
   name: string;
   description: string;
   completion: PathCompletion | ItemCompletion | EndCompletion;
-  required_item: string;
+  required_item: string | null;
   completion_message: string;
 };
 
