@@ -136,3 +136,7 @@ Please generate a JSON object which describes the game using the format below:
 \`\`\`
 `;
 };
+
+export const createThumbnailPrompt = (adventureTitle: string): string => {
+  return `resolution of 256x256, no title, no words, no text, graphic, stunning, A thumbnail for an adventure game titled (${adventureTitle})`;
+};

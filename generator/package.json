@@ -12,7 +12,7 @@
     "openai": "^3.2.1",
     "typescript": "^5.0.4"
   },
-  "scripts":{
+  "scripts": {
     "build": "tsc",
     "start": "tsc && node --trace-warnings dist/src/index.js"
   }

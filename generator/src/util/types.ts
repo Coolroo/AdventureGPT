@@ -46,4 +46,5 @@ export type Adventure = {
   areas: Area[];
   start_area: string;
   intro_text: string;
+  thumbnail?: string;
 };
