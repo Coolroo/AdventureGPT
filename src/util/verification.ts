@@ -11,7 +11,7 @@ import {
 
 export const verifyAdventure = (adventure: Adventure) => {
   adventure = structuredClone(adventure);
-  console.log(`Verifying Adventure ${adventure.title}`);
+  console.log(`Verifying Adventure (${adventure.title})`);
   let initialArea = getArea(adventure, adventure.start_area);
   let initialExplore = exploreArea(adventure, initialArea, []);
 
@@ -37,6 +37,7 @@ export const verifyAdventure = (adventure: Adventure) => {
         .map((interaction) => JSON.stringify(interaction, null, 1))
         .join(",\n")}\n]`
     );
+    console.log(`Player currently has items: [${items.join(",")}]`);
     interactions.forEach((interaction, index) => {
       if (
         interaction.required_item == null ||
