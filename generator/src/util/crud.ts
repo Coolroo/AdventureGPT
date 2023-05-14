@@ -3,6 +3,8 @@ import { getFirestore } from "firebase-admin/firestore";
 
 import admin from "firebase-admin";
 
+import { getStorage } from "firebase-admin/storage";
+
 import serviceAccount from "../../.firebase/firebase_key.json" assert { type: "json" };
 
 let service: admin.ServiceAccount = {
@@ -13,13 +15,26 @@ let service: admin.ServiceAccount = {
 //console.log(service);
 admin.initializeApp({
   credential: admin.credential.cert(service),
+  storageBucket: "adventure-gpt-bfb3c.appspot.com",
 });
 
 const db = getFirestore();
 
-export const saveAdventure = async (adventure: Adventure) => {
-  const docRef = db.collection("adventures").doc(adventure.title);
+const imageStorage = getStorage().bucket();
 
+export const saveAdventure = async (adventure: Adventure, thumbnail: Blob) => {
+  const storageRef = imageStorage.file(
+    `thumbnails/${adventure.title.replace(/\s/g, "")}.png`
+  );
+
+  const buffer = Buffer.from(await thumbnail.arrayBuffer());
+  await storageRef.save(buffer, {
+    contentType: "image/png",
+  });
+
+  await storageRef.makePublic();
+  const docRef = db.collection("adventures").doc(adventure.title);
+  adventure.thumbnail = storageRef.publicUrl();
   await docRef.set(adventure);
 };
 

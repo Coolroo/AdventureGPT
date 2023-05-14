@@ -41,7 +41,11 @@ export const verifyAdventure = (adventure: Adventure) => {
         .map((interaction) => JSON.stringify(interaction, null, 1))
         .join(",\n")}\n]`
     );
-    console.log(`Player currently has items: [${items.join(",")}]`);
+    console.log(
+      `Player currently has items: [${items
+        .map((item) => item.name)
+        .join(",")}]`
+    );
 
     //For each of the interactions, try and complete them
     interactions.forEach((interaction, index) => {
