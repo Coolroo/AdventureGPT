@@ -1,0 +1,13 @@
+{
+  "name": "adventure-gpt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.1.4",
+    "dotenv": "^16.0.3",
+    "firebase-admin": "^11.8.0",
+    "openai": "^3.2.1",
+    "typescript": "^5.0.4"
+  }
+}
