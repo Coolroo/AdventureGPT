@@ -10,8 +10,9 @@ import {
 } from "./types.js";
 
 export const verifyAdventure = (adventure: Adventure) => {
-  adventure = structuredClone(adventure);
   console.log(`Verifying Adventure (${adventure.title})`);
+
+  //Get the initial area, and then DFS it for interactions and items
   let initialArea = getArea(adventure, adventure.start_area);
   let initialExplore = exploreArea(adventure, initialArea, []);
 
@@ -26,9 +27,12 @@ export const verifyAdventure = (adventure: Adventure) => {
       2
     )}`
   );
+  //Ensure there are initial interactions
   if (interactions.length == 0) {
     throw new Error("Could not get any initial interactions");
   }
+
+  //Process all the interactions
   while (interactions.length > 0) {
     let removeInteractions: number[] = [];
     let didCompleteInteraction = false;
@@ -38,22 +42,31 @@ export const verifyAdventure = (adventure: Adventure) => {
         .join(",\n")}\n]`
     );
     console.log(`Player currently has items: [${items.join(",")}]`);
+
+    //For each of the interactions, try and complete them
     interactions.forEach((interaction, index) => {
+      //If the item is null, player can interact with it by default, otherwise ensure the player has access to the required item
       if (
         interaction.required_item == null ||
         items.includes(getItem(adventure, interaction.required_item))
       ) {
+        //mark this interaction for removal, and confirm we have completed an interaction in this iteration of the loop
         removeInteractions.push(index);
         didCompleteInteraction = true;
+
+        //Resolve the effect of the interaction
         switch (interaction.completion.type) {
+          //If the interaction is an ending, add it to the endings list
           case "end":
             let endingCompletion = interaction.completion as EndCompletion;
             endings.push(getEnding(adventure, endingCompletion.ending_id));
             break;
+          //If the interaction gives the player an item, give it to the player
           case "item":
             let itemCompletion = interaction.completion as ItemCompletion;
             items.push(getItem(adventure, itemCompletion.item_name));
             break;
+          //If the interaction opens a path, DFS the new area and add the results to the current scope
           case "path":
             let pathCompletion = interaction.completion as PathCompletion;
             let area = getArea(adventure, pathCompletion.area_id);
@@ -65,22 +78,27 @@ export const verifyAdventure = (adventure: Adventure) => {
         }
       }
     });
+    //If the player can't complete any interactions, this is a problem
     if (!didCompleteInteraction) {
       throw new Error(
         "Reached a point where player could not complete an interaction"
       );
     }
     console.log(`Removing interactions [${removeInteractions.join(",")}]`);
+    //Reverse to account for splice shifting
     removeInteractions.reverse().forEach((index) => {
       interactions.splice(index, 1);
     });
   }
+  //Ensure every ending can be achieved
   if (!endings.every((ending) => adventure.endings.includes(ending))) {
     throw new Error("Could not get every ending");
   }
+  //Ensure player can get every item
   if (!items.every((item) => adventure.items.includes(item))) {
     throw new Error("Could not get every item");
   }
+  //Ensure player can explore every area
   if (
     !explored.every((explore) =>
       adventure.areas.includes(getArea(adventure, explore))
@@ -95,12 +113,14 @@ const exploreArea = (
   area: Area,
   alreadyExplored: string[]
 ): { interactions: Interaction[]; items: Item[]; explored: string[] } => {
+  // Get the items/interactions in this area, then add this area to the already explored list
   let items = area.items.map((itemName) => getItem(adventure, itemName));
 
   let interactions = area.interactions.map((thing) => thing);
 
   alreadyExplored.push(area.name);
 
+  //Recursively search the areas along paths for interactions, and items
   area.paths
     .filter((areaName) => !alreadyExplored.includes(areaName))
     .map((areaName) => getArea(adventure, areaName))
@@ -111,6 +131,7 @@ const exploreArea = (
       alreadyExplored = alreadyExplored.concat(result.explored);
     });
 
+  //Ensure that each result has unique list elements
   interactions = [...new Set(interactions)];
   items = [...new Set(items)];
   alreadyExplored = [...new Set(alreadyExplored)];
