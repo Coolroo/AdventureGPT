@@ -6,8 +6,8 @@ import * as bin from "./commands";
 import {app, database} from "../../utils/db";
 import { collection, getDoc, getDocs } from "firebase/firestore";
 import axios from "axios";
-import { ref } from "firebase/database";
 import { GameStateStore } from "../gameState/GameStateStore";
+var randomColor = require('randomcolor');
 
 export type CommandRef = (historyStore: HistoryStore, gameStateStore?: GameStateStore) => Command;
 
@@ -75,6 +75,36 @@ export const clear: CommandRef = (historyStore: HistoryStore): Command => {
 
 // LOBBY
 
+export const get_newest_adventure: CommandRef = (historyStore: HistoryStore): Command => {
+  return {
+    name: "get_newest_adventure",
+    description: "Finds the newest adventure and gives you details about it!",
+    group: CommandGroup.LOBBY,
+    execute: async () => {
+      let adventureCollection = collection(database, 'adventures');
+      let entries = (await getDocs(adventureCollection)).docs.map((entry) => entry.data() as Adventure);
+      let adventure = entries.reduce((prev, current) => {
+        return prev.time_stamp > current.time_stamp ? prev : current;
+      })
+      return getAdventureDisplay(adventure);
+    }
+  }
+}
+
+export const get_random_adventure: CommandRef = (historyStore: HistoryStore): Command => {
+  return {
+    name: "get_random_adventure",
+    description: "Chooses a random adventure for you to try out!",
+    group: CommandGroup.LOBBY,
+    execute: async () => {
+      let adventureCollection = collection(database, 'adventures');
+      let entries = await getDocs(adventureCollection);
+      let adventure = entries.docs[Math.floor(Math.random()*entries.docs.length)].data() as Adventure;
+      return getAdventureDisplay(adventure);
+    }
+  }
+}
+
 export const list_adventures: CommandRef = (
   historyStore: HistoryStore
 ): Command => {
@@ -86,23 +116,7 @@ export const list_adventures: CommandRef = (
       let adventureCollection = collection(database, 'adventures');
       let entries = await getDocs(adventureCollection);
       let adventures = entries.docs.map((entry) => entry.data() as Adventure);
-      let elements = await Promise.all(adventures.map(async (adventure) => {
-        console.log(`Fetching thumbnail from: ${adventure.thumbnail}`);
-        const res = await axios({
-          headers: {"Access-Control-Allow-Origin": "*"},
-          method: 'get',
-          responseType: 'blob',
-          url: adventure.thumbnail.replace('https://storage.googleapis.com', 'http://localhost:8010/proxy')
-        });
-        const imageBlob = await res.data;
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        return(
-          <div>
-            <span><img src={imageObjectURL} alt="icons" /></span>
-            <span>{`${adventure.title}: ${adventure.intro_text}`}</span>
-          </div>
-        )
-      }))
+      let elements = await Promise.all(adventures.map(async (adventure) => getAdventureDisplay(adventure)))
       return (
         <>
         {elements}
@@ -112,37 +126,9 @@ export const list_adventures: CommandRef = (
   };
 };
 
-export const get_random_adventure: CommandRef = (historyStore: HistoryStore): Command => {
+export const start_adventure: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
   return {
-    name: "get_random_adventure",
-    description: "Chooses a random adventure for you to try out!",
-    group: CommandGroup.LOBBY,
-    execute: async () => {
-      let adventureCollection = collection(database, 'adventures');
-      let entries = await getDocs(adventureCollection);
-      let adventure = entries.docs[Math.floor(Math.random()*entries.docs.length)].data() as Adventure;
-      console.log(`Fetching thumbnail from: ${adventure.thumbnail}`);
-      const res = await axios({
-        headers: {"Access-Control-Allow-Origin": "*"},
-        method: 'get',
-        responseType: 'blob',
-        url: adventure.thumbnail.replace('https://storage.googleapis.com', 'http://localhost:8010/proxy')
-      });
-      const imageBlob = await res.data;
-      const imageObjectURL = URL.createObjectURL(imageBlob);
-      return(
-        <div>
-          <span><img src={imageObjectURL} alt="icons" /></span>
-          <span>{`${adventure.title}: ${adventure.intro_text}`}</span>
-        </div>
-      )
-    }
-  }
-}
-
-export const play_adventure: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
-  return {
-    name: 'play_adventure',
+    name: 'start_adventure',
     description: 'Choose an adventure to play! Usage: play_adventure <adventure name>',
     group: CommandGroup.LOBBY,
     execute: async (args: string[]) => {
@@ -174,6 +160,24 @@ export const start_game: CommandRef = (historyStore: HistoryStore, gameStateStor
       return makePara(`Error starting adventure, ensure you have an adventure loaded with (play_adventure), and you haven't started one already`);
     }
   }
+}
+
+const getAdventureDisplay = async (adventure: Adventure) => {
+  console.log(`Fetching thumbnail from: ${adventure.thumbnail}`);
+  const res = await axios({
+    headers: {"Access-Control-Allow-Origin": "*"},
+    method: 'get',
+    responseType: 'blob',
+    url: adventure.thumbnail.replace('https://storage.googleapis.com', 'http://localhost:8010/proxy')
+  });
+  const imageBlob = await res.data;
+  const imageObjectURL = URL.createObjectURL(imageBlob);
+  return(
+    <div>
+      <span><img src={imageObjectURL} alt="icons" /></span>
+      <span><div style={{color: randomColor()}}>{adventure.title}</div><div>{`${adventure.intro_text}`}</div></span>
+    </div>
+  )
 }
 
 const makePara = (inVal: string) => {

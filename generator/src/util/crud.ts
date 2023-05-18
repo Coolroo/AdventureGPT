@@ -35,6 +35,7 @@ export const saveAdventure = async (adventure: Adventure, thumbnail: Blob) => {
   await storageRef.makePublic();
   const docRef = db.collection("adventures").doc(adventure.title);
   adventure.thumbnail = storageRef.publicUrl();
+  adventure.time_stamp = Date.now();
   await docRef.set(adventure);
 };
 

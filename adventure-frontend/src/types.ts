@@ -67,4 +67,5 @@ export type Adventure = {
   start_area: string;
   intro_text: string;
   thumbnail?: string;
+  time_stamp: number;
 };
