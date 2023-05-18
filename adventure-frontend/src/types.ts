@@ -1,4 +1,4 @@
 export type ConsoleMessage = {
   is_user: boolean;
-  val: string;
+  val: string | JSX.Element;
 };
