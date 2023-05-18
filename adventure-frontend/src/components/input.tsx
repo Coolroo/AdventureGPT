@@ -4,6 +4,7 @@ import * as bin from "./command/commands";
 import { handleTabCompletion } from '../utils/tabCompletion';
 import { Ps1 } from './Ps1';
 import { useHistoryStore } from './history/HistoryStore';
+import { useGameState } from './gameState/GameStateStore';
 
 export const Input = ({
   inputRef,
@@ -22,6 +23,7 @@ export const Input = ({
     (state) => state.addToMessageHistory
   );
     const historyStore = useHistoryStore((state) => state);
+    const gameStateStore = useGameState((state) => state);
 
   const shell = async (command: string) => {
 
@@ -42,7 +44,7 @@ export const Input = ({
         val: `shell: command not found: ${args[0]}. Try 'help' to get started.`,
       });
     } else {
-      const command = Object.values(bin).map((com) => com(historyStore)).find((com) => com.name === args[0]);
+      const command = Object.values(bin).map((com) => com(historyStore, gameStateStore)).find((com) => com.name === args[0]);
       if(command){
         let result = await command.execute(args.slice(1));
         if(result){
@@ -52,7 +54,6 @@ export const Input = ({
       }
       
     }
-    setCommand('');
   };
   
 
@@ -76,6 +77,7 @@ export const Input = ({
 
     if (event.key === 'Enter' || event.code === '13') {
       event.preventDefault();
+      setCommand('');
       await shell(command);
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }

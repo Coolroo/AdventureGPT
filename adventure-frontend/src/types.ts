@@ -13,7 +13,7 @@ export interface Command {
   name: string;
   description: string;
   group: CommandGroup;
-  execute: (args?: string[]) => Promise<string | JSX.Element | undefined>;
+  execute: (args?: string[]) => Promise<JSX.Element | undefined>;
 }
 
 //Adventure

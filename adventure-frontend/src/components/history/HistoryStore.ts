@@ -32,12 +32,11 @@ export const useHistoryStore = create<HistoryStore>((set) => ({
     set((state) => ({
       ...state,
       commandHistory: [...state.commandHistory, command],
-      pos: state.commandHistory.length,
+      pos: state.commandHistory.length + 1,
     })),
   clearHistory: () =>
     set((state) => ({
       ...state,
-      commandHistory: [],
       messageHistory: [],
       pos: 0,
     })),
