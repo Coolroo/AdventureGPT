@@ -4,6 +4,8 @@ import { Command, CommandGroup, ConsoleMessage } from "../../types";
 import { HistoryStore } from "../history/HistoryStore";
 import * as bin from "./commands";
 
+//UTIL
+
 // Help
 export const help = (historyStore: HistoryStore): Command => {
   return {
@@ -63,3 +65,5 @@ export const clear = (historyStore: HistoryStore): Command => {
     },
   };
 };
+
+// LOBBY
