@@ -2,7 +2,7 @@ import Head from 'next/head';
 import React from 'react';
 import config from '../../config.json';
 import { useHistoryStore } from '../components/history/HistoryStore';
-import { banner } from '../utils/bin';
+import { banner } from '../components/command/commands';
 import { History } from '../components/history/History';
 import Input from '../components/input';
 
@@ -13,9 +13,12 @@ interface IndexPageProps {
 const IndexPage: React.FC<IndexPageProps> = ({ inputRef }) => {
   const containerRef = React.useRef(null);
   const addToMessageHistory = useHistoryStore((state) => state.addToMessageHistory);
+  const historyState = useHistoryStore();
 
 
-  const init = React.useCallback(() => addToMessageHistory(banner()), []);
+  const init = React.useCallback(async () => 
+    addToMessageHistory({is_user: false, val: await banner(historyState).execute()})
+    , []);
 
   const history = useHistoryStore((state) => state.commandHistory);
 

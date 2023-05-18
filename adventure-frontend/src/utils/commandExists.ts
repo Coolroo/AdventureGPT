@@ -1,7 +1,7 @@
-import * as bin from "./bin";
+import * as bin from "../components/command/commands";
 
 export const commandExists = (command: string) => {
-  const commands = ["clear", ...Object.keys(bin)];
-  console.log(`command = ${command}`);
-  return commands.indexOf(command.split(" ")[0].toLowerCase()) !== -1;
+  return Object.values(bin)
+    .map((command) => command.name)
+    .includes(command);
 };

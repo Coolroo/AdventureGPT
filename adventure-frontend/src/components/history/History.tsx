@@ -8,7 +8,7 @@ export const History: React.FC = () => {
   return (
     <>
       {history.map((entry: ConsoleMessage, index: number) => (
-        <div key={entry.val + index}>
+        <div key={entry.val.toString() + index}>
           {
             entry.is_user ? (
           <div className="flex flex-row space-x-2">
@@ -24,7 +24,7 @@ export const History: React.FC = () => {
           <p
             className="whitespace-pre-wrap mb-2"
             style={{ lineHeight: 'normal' }}
-            dangerouslySetInnerHTML={{ __html: entry.val }}
+            dangerouslySetInnerHTML={{ __html: entry.val.toString() }}
           />
             )
           }
