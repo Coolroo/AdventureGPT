@@ -13,5 +13,5 @@ export interface Command {
   name: string;
   description: string;
   group: CommandGroup;
-  execute: (args?: string[]) => Promise<string | JSX.Element>;
+  execute: (args?: string[]) => Promise<string | JSX.Element | undefined>;
 }

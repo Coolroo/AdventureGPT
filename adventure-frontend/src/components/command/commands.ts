@@ -1,6 +1,6 @@
 // List of commands that do not require API calls
 
-import { Command, CommandGroup, ConsoleMessage } from "../../types.js";
+import { Command, CommandGroup, ConsoleMessage } from "../../types";
 import { HistoryStore } from "../history/HistoryStore";
 import * as bin from "./commands";
 
@@ -10,14 +10,16 @@ export const help = (historyStore: HistoryStore): Command => {
     name: "help",
     description: "Lists all available commands",
     group: CommandGroup.UTIL,
-    execute: () => {
+    execute: (args?: string[]) => {
       let groups: string[] = [];
       let commands = Object.values(bin).map((com) => com(historyStore));
-      Object.keys(CommandGroup).forEach((group: CommandGroup) => {
+      console.log(JSON.stringify(commands));
+      Object.values(CommandGroup).forEach((group: CommandGroup) => {
         let block: string = `${group}:`;
         let blockCommands: Command[] = commands.filter(
           (com) => com.group === group
         );
+        console.log(`${group}: ${JSON.stringify(blockCommands)}`);
         blockCommands.forEach((command) => {
           block += `\n[${command.name}]: ${command.description}`;
         });
@@ -34,7 +36,7 @@ export const banner = (historyStore: HistoryStore): Command => {
     name: "banner",
     description: "Displays the GPTAdventure Logo",
     group: CommandGroup.UTIL,
-    execute: () =>
+    execute: (args?: string[]) =>
       Promise.resolve(`
       _____ ______ _____ ___      _                 _                  
       |  __ \\| ___ \\_   _/ _ \\    | |               | |                 
@@ -46,5 +48,18 @@ export const banner = (historyStore: HistoryStore): Command => {
                                                                         
     Type 'help' to see the list of available commands.
     `),
+  };
+};
+
+// Clear
+export const clear = (historyStore: HistoryStore): Command => {
+  return {
+    name: "clear",
+    description: "Clears the terminal",
+    group: CommandGroup.UTIL,
+    execute: () => {
+      historyStore.clearHistory();
+      return undefined;
+    },
   };
 };
