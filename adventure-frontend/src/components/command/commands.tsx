@@ -458,13 +458,13 @@ export const move: CommandRef = (historyStore: HistoryStore, gameStateStore: Gam
 const getAdventureDisplay = async (adventure: Adventure) => {
   console.log(`Fetching thumbnail from: ${adventure.thumbnail}`);
   const res = await axios({
-    headers: { "Access-Control-Allow-Origin": "*" },
+    headers: {  "Access-Control-Request-Headers": ['Content-Type'] },
     method: "get",
     responseType: "blob",
-    url: adventure.thumbnail//.replace(
-      //"https://storage.googleapis.com",
-      //"http://localhost:8010/proxy"
-    //),
+    url: adventure.thumbnail/*.replace(
+      "https://storage.googleapis.com",
+      "http://localhost:8010/proxy"
+    ),*/
   });
   const imageBlob = await res.data;
   const imageObjectURL = URL.createObjectURL(imageBlob);
