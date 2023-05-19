@@ -89,10 +89,10 @@ export const clear: CommandRef = (historyStore: HistoryStore): Command => {
 
 // LOBBY
 
-export const get_newest_adventure: CommandRef = (
+export const newest: CommandRef = (
 ): Command => {
   return {
-    name: "get_newest_adventure",
+    name: "newest",
     description: "Finds the newest adventure and gives you details about it!",
     group: CommandGroup.LOBBY,
     execute: async () => {
@@ -108,10 +108,10 @@ export const get_newest_adventure: CommandRef = (
   };
 };
 
-export const get_random_adventure: CommandRef = (
+export const random: CommandRef = (
 ): Command => {
   return {
-    name: "get_random_adventure",
+    name: "random",
     description: "Chooses a random adventure for you to try out!",
     group: CommandGroup.LOBBY,
     execute: async () => {
@@ -125,10 +125,10 @@ export const get_random_adventure: CommandRef = (
   };
 };
 
-export const list_adventures: CommandRef = (
+export const adventures: CommandRef = (
 ): Command => {
   return {
-    name: "list_adventures",
+    name: "adventures",
     description: "Lists all the adventures available",
     group: CommandGroup.LOBBY,
     execute: async () => {
@@ -143,14 +143,14 @@ export const list_adventures: CommandRef = (
   };
 };
 
-export const load_adventure: CommandRef = (
+export const load: CommandRef = (
   historyStore: HistoryStore,
   gameStateStore: GameStateStore
 ) => {
   return {
-    name: "load_adventure",
+    name: "load",
     description:
-      "Choose an adventure to play! Usage: load_adventure <adventure name>",
+      "Choose an adventure to play! Usage: load <adventure name>",
     group: CommandGroup.LOBBY,
     execute: async (args: string[]) => {
       let adventureCollection = collection(database, "adventures");
@@ -172,14 +172,14 @@ export const load_adventure: CommandRef = (
   };
 };
 
-export const start_game: CommandRef = (
+export const start: CommandRef = (
   historyStore: HistoryStore,
   gameStateStore: GameStateStore
 ) => {
   return {
-    name: "start_game",
+    name: "start",
     description:
-      "Start the adventure you've loaded, you must run (load_adventure) before this",
+      "Start the adventure you've loaded, you must run (load) before this",
     group: CommandGroup.LOBBY,
     execute: async () => {
       let adventure = gameStateStore.adventure;
@@ -192,7 +192,7 @@ export const start_game: CommandRef = (
         );
       }
       return makePara(
-        `Error starting adventure, ensure you have an adventure loaded with (load_adventure), and you haven't started one already`
+        `Error starting adventure, ensure you have an adventure loaded with (load), and you haven't started one already`
       );
     },
   };
@@ -200,9 +200,9 @@ export const start_game: CommandRef = (
 
 // Game
 
-export const look_around: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
+export const look: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
   return {
-    name: 'look_around',
+    name: 'look',
     description: 'Look around the room you are in, and see what there is',
     group: CommandGroup.GAMEPLAY,
     execute: async () => {
@@ -423,10 +423,10 @@ export const interact: CommandRef = (
   };
 };
 
-export const move_to: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
+export const move: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
   return {
-    name: 'move_to',
-    description: 'Move along a path to an adjacent area',
+    name: 'move',
+    description: 'Move along a path to an adjacent area. Usage: move <area name>',
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
