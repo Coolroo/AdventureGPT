@@ -18,8 +18,8 @@ jobs:
         working-directory: ./adventure-frontend
         run: yarn && yarn build
       - uses: FirebaseExtended/action-hosting-deploy@v0
-        working-directory: ./adventure-frontend
         with:
+          working-directory: ./adventure-frontend
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ADVENTURE_GPT_BFB3C }}"
           channelId: live
