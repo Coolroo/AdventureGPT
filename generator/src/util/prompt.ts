@@ -114,13 +114,15 @@ Endings should be created using the JSON format below:
 }
 \`\`\`
 
-There should be an interaction for all of the generated endings, please ensure the player will be able to achieve all the endings.
+The player should be able to end the game using every ending. This means that there should be an interaction for each ending, that the player can achieve.
 
 Please choose a unique theme as well, the following themes have already been used, so don’t use them again: ${previousTitles.join(
     ","
   )}.
 
 Please remember the rule above, which states that “You must make sure that players will always be able to interact with the next interaction in the graph, for this to be true they must: have access to the area the interaction is in, and must have the item that the interaction needs to complete (ignore item requirement if required_item is null). Do not ever break this rule. I trust you, and believe you can do this.”
+
+Make sure at least one interaction exists for each ending type, that triggers that ending.
 
 You have 2048 tokens to complete your entire response, so keep that in mind so you don’t go over.
 
