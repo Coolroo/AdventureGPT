@@ -5,6 +5,7 @@ import { useHistoryStore } from '../components/history/HistoryStore';
 import { banner } from '../components/command/commands';
 import { History } from '../components/history/History';
 import Input from '../components/input';
+import { ConsoleMessage } from '../types';
 
 interface IndexPageProps {
   inputRef: React.MutableRefObject<HTMLInputElement>;
@@ -17,7 +18,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ inputRef }) => {
 
 
   const init = React.useCallback(async () => 
-    addToMessageHistory({is_user: false, val: await banner(historyState).execute()})
+    addToMessageHistory({is_user: false, val: await banner(historyState).execute()} as ConsoleMessage)
     , []);
 
   const history = useHistoryStore((state) => state.commandHistory);
