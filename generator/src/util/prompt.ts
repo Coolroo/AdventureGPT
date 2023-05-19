@@ -20,7 +20,9 @@ The description of the room should take into consideration the items in the room
 
 If an interaction would unlock a path, the area that the interaction is in should not already have a path to the area that would be unlocked with the interaction.
 
-Note that some areas may not have any paths to them at the beginning of the game, that is okay, as long as there is an interaction in the game that allows the player to eventually reach that area
+Note that some areas may not have any paths to them at the beginning of the game, that is okay, as long as there is an interaction in the game that allows the player to eventually reach that area.
+
+If an area has a path to another area, that other area must have a path back to the original area.
 
 Think of Areas as nodes on a graph, which are connected with edges "paths". These paths are how the player will move through the game from area to area. Paths can be locked, and and unlocked throughout the course of the game preventing/allowing players to travel across them respectively. Paths are represented in the area object, as area ID's that the room is connected to
 

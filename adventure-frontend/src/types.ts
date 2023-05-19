@@ -1,5 +1,6 @@
 export type ConsoleMessage = {
   is_user: boolean;
+  hostname: string;
   val: string | JSX.Element;
 };
 

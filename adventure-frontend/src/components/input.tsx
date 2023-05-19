@@ -5,6 +5,7 @@ import { handleTabCompletion } from '../utils/tabCompletion';
 import { Ps1 } from './Ps1';
 import { useHistoryStore } from './history/HistoryStore';
 import { useGameState } from './gameState/GameStateStore';
+import config from '../../config.json';
 
 export const Input = ({
   inputRef,
@@ -32,6 +33,7 @@ export const Input = ({
   
     addToMessageHistory({
       is_user: true,
+      hostname: gameStateStore.started ? gameStateStore.adventure.title : config.ps1_hostname,
       val: command,
     });
     addToCommandHistory(command);
@@ -41,6 +43,7 @@ export const Input = ({
     } else if (Object.keys(bin).indexOf(args[0]) === -1) {
       addToMessageHistory({
         is_user: false,
+        hostname: gameStateStore.started ? gameStateStore.adventure.title : config.ps1_hostname,
         val: `shell: command not found: ${args[0]}. Try 'help' to get started.`,
       });
     } else {
@@ -48,7 +51,9 @@ export const Input = ({
       if(command){
         let result = await command.execute(args.slice(1));
         if(result){
-          addToMessageHistory({ is_user: false, val: result });
+          addToMessageHistory({ is_user: false,
+            hostname: gameStateStore.started ? gameStateStore.adventure.title : config.ps1_hostname,
+             val: result });
         }
         
       }
@@ -109,7 +114,7 @@ export const Input = ({
   return (
     <div className="flex flex-row space-x-2">
       <label htmlFor="prompt" className="flex-shrink">
-        <Ps1 />
+        <Ps1 hostname={gameStateStore.started ? gameStateStore.adventure.title : config.ps1_hostname}/>
       </label>
 
       <input

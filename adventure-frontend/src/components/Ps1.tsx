@@ -1,7 +1,8 @@
 import React from 'react';
 import config from '../../config.json';
+import { GameStateStore } from './gameState/GameStateStore';
 
-export const Ps1 = () => {
+export const Ps1 = ({hostname}) => {
   return (
     <div>
       <span className="text-light-yellow dark:text-dark-yellow">
@@ -9,7 +10,7 @@ export const Ps1 = () => {
       </span>
       <span className="text-light-gray dark:text-dark-gray">@</span>
       <span className="text-light-green dark:text-dark-green">
-        {config.ps1_hostname}
+        {hostname}
       </span>
       <span className="text-light-gray dark:text-dark-gray">:$ ~ </span>
     </div>

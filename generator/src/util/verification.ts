@@ -32,6 +32,30 @@ export const verifyAdventure = (adventure: Adventure) => {
     throw new Error("Could not get any initial interactions");
   }
 
+  let areas = adventure.areas;
+
+  if (
+    areas.some((area) => {
+      let paths = area.paths;
+      let pathAreas = paths.map((areaName) =>
+        areas.find((otherArea) => otherArea.name === areaName)
+      );
+      return pathAreas.some(
+        (otherArea) =>
+          !(
+            otherArea?.paths.includes(area.name) ||
+            otherArea?.interactions.some(
+              (interaction) =>
+                interaction.completion.type === "path" &&
+                interaction.completion.area_id === area.name
+            )
+          )
+      );
+    })
+  ) {
+    throw new Error("Some areas have invalid path structures!");
+  }
+
   //Process all the interactions
   while (interactions.length > 0) {
     let removeInteractions: number[] = [];
