@@ -119,19 +119,16 @@ export const verifyAdventure = (adventure: Adventure) => {
     });
   }
   //Ensure every ending can be achieved
-  if (!endings.every((ending) => adventure.endings.includes(ending))) {
+  if (!adventure.endings.every((ending) => endings.includes(ending))) {
     throw new Error("Could not get every ending");
   }
   //Ensure player can get every item
-  if (!items.every((item) => adventure.items.includes(item))) {
+  if (!adventure.items.every((item) => items.includes(item))) {
     throw new Error("Could not get every item");
   }
   //Ensure player can explore every area
-  if (
-    !explored.every((explore) =>
-      adventure.areas.includes(getArea(adventure, explore))
-    )
-  ) {
+  let exploredAreas = explored.map((explored) => getArea(adventure, explored));
+  if (!adventure.areas.every((area) => exploredAreas.includes(area))) {
     throw new Error("Could not explore every area");
   }
 };

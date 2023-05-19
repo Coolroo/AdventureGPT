@@ -19,7 +19,7 @@ var randomColor = require("randomcolor");
 import config from "../../../config.json";
 
 export type CommandRef = (
-  historyStore: HistoryStore,
+  historyStore?: HistoryStore,
   gameStateStore?: GameStateStore
 ) => Command;
 
@@ -90,7 +90,6 @@ export const clear: CommandRef = (historyStore: HistoryStore): Command => {
 // LOBBY
 
 export const get_newest_adventure: CommandRef = (
-  historyStore: HistoryStore
 ): Command => {
   return {
     name: "get_newest_adventure",
@@ -110,7 +109,6 @@ export const get_newest_adventure: CommandRef = (
 };
 
 export const get_random_adventure: CommandRef = (
-  historyStore: HistoryStore
 ): Command => {
   return {
     name: "get_random_adventure",
@@ -128,7 +126,6 @@ export const get_random_adventure: CommandRef = (
 };
 
 export const list_adventures: CommandRef = (
-  historyStore: HistoryStore
 ): Command => {
   return {
     name: "list_adventures",
@@ -146,14 +143,14 @@ export const list_adventures: CommandRef = (
   };
 };
 
-export const start_adventure: CommandRef = (
+export const load_adventure: CommandRef = (
   historyStore: HistoryStore,
   gameStateStore: GameStateStore
 ) => {
   return {
-    name: "start_adventure",
+    name: "load_adventure",
     description:
-      "Choose an adventure to play! Usage: play_adventure <adventure name>",
+      "Choose an adventure to play! Usage: load_adventure <adventure name>",
     group: CommandGroup.LOBBY,
     execute: async (args: string[]) => {
       let adventureCollection = collection(database, "adventures");
@@ -182,7 +179,7 @@ export const start_game: CommandRef = (
   return {
     name: "start_game",
     description:
-      "Start the adventure you've loaded, you must run (play_adventure) before this",
+      "Start the adventure you've loaded, you must run (load_adventure) before this",
     group: CommandGroup.LOBBY,
     execute: async () => {
       let adventure = gameStateStore.adventure;
@@ -195,7 +192,7 @@ export const start_game: CommandRef = (
         );
       }
       return makePara(
-        `Error starting adventure, ensure you have an adventure loaded with (play_adventure), and you haven't started one already`
+        `Error starting adventure, ensure you have an adventure loaded with (load_adventure), and you haven't started one already`
       );
     },
   };
@@ -234,6 +231,22 @@ export const look_around: CommandRef = (historyStore: HistoryStore, gameStateSto
 
 }
 
+export const satchel: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
+  return {
+    name: 'satchel',
+    description: 'Check the contents of your satchel',
+    group: CommandGroup.GAMEPLAY,
+    execute: async () => {
+      if (!gameStateStore.started) {
+        return makePara(
+          "You cannot use a Gameplay command if an adventure has not been started! (Refer to Lobby commands)"
+        );
+      }
+      return makePara(`I have: ${gameStateStore.items.map((item) => item.name).join(", ")} in my satchel.`);
+    }
+  }
+}
+
 export const examine: CommandRef = (
   historyStore: HistoryStore,
   gameStateStore: GameStateStore
@@ -267,7 +280,7 @@ export const examine: CommandRef = (
             let interaction = currentArea.interactions.find(
               (interac) => interac.name === args[0]
             );
-            return makePara(interaction.completion_message);
+            return makePara(interaction.description);
           }
           else{
             let item = gameStateStore.adventure.items.find(
@@ -293,7 +306,7 @@ export const interact: CommandRef = (
   return {
     name: "interact",
     description:
-      "Interact with something in the area you are in. Usage: interact <thing you are interacting with> <item you are using>",
+      "Interact with something in the area you are in. Usage: interact <thing you are interacting with> <item you are using *Optional*>",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
@@ -347,7 +360,7 @@ export const interact: CommandRef = (
               //If the player is trying to use the wrong item
               else if (args[1] !== interaction.required_item) {
                 return makePara(
-                  `It doesn't make sense to use the ${args[1]} on the ${interaction.required_item}`
+                  `It doesn't make sense to use the ${args[1]} on the ${interaction.name}`
                 );
               }
             }
