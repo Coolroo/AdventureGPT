@@ -461,10 +461,10 @@ const getAdventureDisplay = async (adventure: Adventure) => {
     headers: { "Access-Control-Allow-Origin": "*" },
     method: "get",
     responseType: "blob",
-    url: adventure.thumbnail.replace(
-      "https://storage.googleapis.com",
-      "http://localhost:8010/proxy"
-    ),
+    url: adventure.thumbnail//.replace(
+      //"https://storage.googleapis.com",
+      //"http://localhost:8010/proxy"
+    //),
   });
   const imageBlob = await res.data;
   const imageObjectURL = URL.createObjectURL(imageBlob);
