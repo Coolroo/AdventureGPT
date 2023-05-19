@@ -23,3 +23,5 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ADVENTURE_GPT_BFB3C }}"
           channelId: live
           projectId: adventure-gpt-bfb3c
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
