@@ -478,7 +478,10 @@ const fixAdventure = (adventure: Adventure): Adventure => {
           break;
       }
       interaction.name = interaction.name.replaceAll(' ', '_');
-      interaction.required_item = interaction.required_item.replaceAll(' ', '_');
+      if(interaction.required_item != null){
+        interaction.required_item = interaction.required_item.replaceAll(' ', '_');
+      }
+      
     });
   });
   return adventure;
