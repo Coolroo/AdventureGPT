@@ -162,7 +162,8 @@ export const load: CommandRef = (
         (adventure) => adventure.title === adventureName
       );
       if (adventure) {
-        gameStateStore.setAdventure(adventure);
+
+        gameStateStore.setAdventure(fixAdventure(adventure));
         return makePara(`Successfully loaded adventure: ${adventureName}`);
       }
       return makePara(
@@ -453,6 +454,34 @@ export const move: CommandRef = (historyStore: HistoryStore, gameStateStore: Gam
       }
     }
   }
+}
+
+const fixAdventure = (adventure: Adventure): Adventure => {
+  adventure.start_area = adventure.start_area.replaceAll(' ', '_');
+  adventure.items.forEach((item) => {
+    item.name = item.name.replaceAll(' ', '_');
+  });
+  adventure.areas.forEach((area) => {
+    area.name = area.name.replaceAll(' ', '_');
+    area.items.map((itemName) => itemName.replaceAll(' ', '_'));
+    area.paths.map((path) => path.replaceAll(' ', '_'));
+    area.interactions.forEach((interaction) => {
+      let completion = interaction.completion;
+      switch(completion.type){
+        case "path":
+          completion.area_id = completion.area_id.replaceAll(' ', '_');
+          break;
+        case "item":
+          completion.item_name = completion.item_name.replaceAll(' ', '_');
+          break;
+        default:
+          break;
+      }
+      interaction.name = interaction.name.replaceAll(' ', '_');
+      interaction.required_item = interaction.required_item.replaceAll(' ', '_');
+    });
+  });
+  return adventure;
 }
 
 const getAdventureDisplay = async (adventure: Adventure) => {
