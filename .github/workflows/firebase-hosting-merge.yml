@@ -14,6 +14,7 @@ jobs:
       - name: Bring env in
         working-directory: ./adventure-frontend
         run: cp .env.local .env
+        run: cp ./public/favicon.ico public/favicon.ico
       - name: build app
         working-directory: ./adventure-frontend
         run: yarn && yarn build
