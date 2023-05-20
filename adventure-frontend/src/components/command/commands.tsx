@@ -150,7 +150,7 @@ export const load: CommandRef = (
   return {
     name: "load",
     description:
-      "Choose an adventure to play! Usage: load <adventure name>",
+      "Choose an adventure to play! Usage: load (adventure name)",
     group: CommandGroup.LOBBY,
     execute: async (args: string[]) => {
       let adventureCollection = collection(database, "adventures");
@@ -255,7 +255,7 @@ export const examine: CommandRef = (
   return {
     name: "examine",
     description:
-      "Examine something in the area you are in. Usage: examine <thing you want to examine>",
+      "Examine something in the area you are in. Usage: examine (thing you want to examine)",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
@@ -307,7 +307,7 @@ export const interact: CommandRef = (
   return {
     name: "interact",
     description:
-      "Interact with something in the area you are in. Usage: interact <thing you are interacting with> <item you are using *Optional*>",
+      "Interact with something in the area you are in. Usage: interact (thing you are interacting with) (item you are using *Optional*)",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
@@ -427,7 +427,7 @@ export const interact: CommandRef = (
 export const move: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
   return {
     name: 'move',
-    description: 'Move along a path to an adjacent area. Usage: move <area name>',
+    description: 'Move along a path to an adjacent area. Usage: move (area name)',
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
