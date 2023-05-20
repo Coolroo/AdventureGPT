@@ -13,6 +13,7 @@ export enum CommandGroup {
 export interface Command {
   name: string;
   description: string;
+  usage?: string;
   group: CommandGroup;
   execute: (args?: string[]) => Promise<JSX.Element | undefined>;
 }

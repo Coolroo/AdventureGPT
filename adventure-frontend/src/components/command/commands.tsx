@@ -27,26 +27,32 @@ export type CommandRef = (
 
 // Help
 export const help: CommandRef = (historyStore: HistoryStore): Command => {
+  const groupColors: {[key in CommandGroup]?: string} = {
+    [CommandGroup.UTIL]: "#FFFF00",
+    [CommandGroup.LOBBY]: "#FF0000",
+    [CommandGroup.GAMEPLAY]: "#00FF00"
+  }
+  const usageColor = "#FF00FF";
   return {
     name: "help",
     description: "Lists all available commands",
     group: CommandGroup.UTIL,
     execute: () => {
-      let groups: string[] = [];
+      let groups: JSX.Element[][] = [];
       let commands = Object.values(bin).map((com) => com(historyStore));
       console.log(JSON.stringify(commands));
       Object.values(CommandGroup).forEach((group: CommandGroup) => {
-        let block: string = `${group}:`;
+        let block: JSX.Element[] = [<div><p style={{color: groupColors[group], display: "inline"}}>{group}</p>:</div>];
         let blockCommands: Command[] = commands.filter(
           (com) => com.group === group
         );
         console.log(`${group}: ${JSON.stringify(blockCommands)}`);
         blockCommands.forEach((command) => {
-          block += `\n[${command.name}]: ${command.description}`;
+          block.push(<div>[<p style={{color: groupColors[group], display: "inline"}}>{command.name}</p>]: {command.description}. {command.usage && <p style={{color: usageColor, display: "inline"}}>Usage: {command.usage}</p>}</div>);
         });
         groups.push(block);
       });
-      return Promise.resolve(makePara(groups.join("\n")));
+      return Promise.resolve(<div>{groups}</div>);
     },
   };
 };
@@ -150,7 +156,8 @@ export const load: CommandRef = (
   return {
     name: "load",
     description:
-      "Choose an adventure to play! Usage: load (adventure name)",
+      "Choose an adventure to play!",
+    usage: "load (adventure name)",
     group: CommandGroup.LOBBY,
     execute: async (args: string[]) => {
       let adventureCollection = collection(database, "adventures");
@@ -255,7 +262,8 @@ export const examine: CommandRef = (
   return {
     name: "examine",
     description:
-      "Examine something in the area you are in. Usage: examine (thing you want to examine)",
+      "Examine something in the area you are in.",
+    usage: "examine (thing you want to examine)",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
@@ -307,7 +315,8 @@ export const interact: CommandRef = (
   return {
     name: "interact",
     description:
-      "Interact with something in the area you are in. Usage: interact (thing you are interacting with) (item you are using *Optional*)",
+      "Interact with something in the area you are in.",
+    usage: "interact (thing you are interacting with) (item you are using *Optional*)",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
@@ -427,7 +436,8 @@ export const interact: CommandRef = (
 export const move: CommandRef = (historyStore: HistoryStore, gameStateStore: GameStateStore) => {
   return {
     name: 'move',
-    description: 'Move along a path to an adjacent area. Usage: move (area name)',
+    description: 'Move along a path to an adjacent area.',
+    usage: "move (area name)",
     group: CommandGroup.GAMEPLAY,
     execute: async (args: string[]) => {
       if (!gameStateStore.started) {
