@@ -195,8 +195,7 @@ export const start: CommandRef = (
       if (adventure && !started) {
         gameStateStore.setStarted(true);
         return makePara(
-          adventure.areas.find((area) => area.name === adventure.start_area)
-            .description
+          adventure.intro_text
         );
       }
       return makePara(
